@@ -1,7 +1,7 @@
 import { LowdbSync } from 'lowdb';
 import { UsersStorage } from 'UsersStorage';
 import { Notifier } from 'Core';
-import { TelegramBot } from './TelegramBot';
+import { TelegramBot, escapeMarkdown } from './TelegramBot';
 
 export class TelegramNotifier implements Notifier {
   private store: UsersStorage;
@@ -35,7 +35,10 @@ export class TelegramNotifier implements Notifier {
       return;
     }
     console.log('notifyReviewerAboutMr');
-    const message = `🙏🏻 ${mrInfo.author} просит вас посмотреть МР [${mrInfo.name}](${mrInfo.link})`;
+    const message = `🙏🏻 ${mrInfo.author} просит вас посмотреть МР ${this.makeMarkdownLinktoMr(
+      mrInfo.name,
+      mrInfo.link,
+    )}`;
     this.bot.sendMessage(user.telegramChatId, message);
   }
 
@@ -48,7 +51,10 @@ export class TelegramNotifier implements Notifier {
     },
   ) {
     const user = await this.store.getUser(reviewer);
-    const message = `🙄 ${mrInfo.author} поправил замечания в МР [${mrInfo.name}](${mrInfo.link})`;
+    const message = `🙄 ${mrInfo.author} поправил замечания в МР ${this.makeMarkdownLinktoMr(
+      mrInfo.name,
+      mrInfo.link,
+    )}`;
     if (!user) {
       return;
     }
@@ -65,7 +71,10 @@ export class TelegramNotifier implements Notifier {
     },
   ) {
     const user = await this.store.getUser(author);
-    const message = `👍 ${mrInfo.reviewer} апрувнул ваш МР [${mrInfo.name}](${mrInfo.link})`;
+    const message = `👍 ${mrInfo.reviewer} апрувнул ваш МР ${this.makeMarkdownLinktoMr(
+      mrInfo.name,
+      mrInfo.link,
+    )}`;
     if (!user) {
       return;
     }
@@ -82,11 +91,18 @@ export class TelegramNotifier implements Notifier {
     },
   ) {
     const user = await this.store.getUser(author);
-    const message = `👀 ${mrInfo.reviewer} посмотрел ваш МР [${mrInfo.name}](${mrInfo.link})`;
+    const message = `👀 ${mrInfo.reviewer} посмотрел ваш МР ${this.makeMarkdownLinktoMr(
+      mrInfo.name,
+      mrInfo.link,
+    )}`;
     if (!user) {
       return;
     }
     console.log('notifyAuthorAboutWatched');
     this.bot.sendMessage(user.telegramChatId, message);
+  }
+
+  private makeMarkdownLinktoMr(name: string, link: string) {
+    return `[${escapeMarkdown(name)}](${link})`;
   }
 }

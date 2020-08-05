@@ -50,13 +50,32 @@ export class TelegramBot {
   }
 
   sendMessage(chatId: number, message: string) {
-    // @see https://core.telegram.org/bots/api#markdownv2-style
-    const escapedChars = ['.'];
-    const escapedMessage = escapedChars.reduce(
-      (msg, char) => msg.split(char).join(`\\${char}`),
-      message,
-    );
     // eslint-disable-next-line @typescript-eslint/camelcase
-    this.bot.telegram.sendMessage(chatId, escapedMessage, { parse_mode: 'MarkdownV2' });
+    this.bot.telegram.sendMessage(chatId, message, { parse_mode: 'MarkdownV2' });
   }
+}
+
+export function escapeMarkdown(text: string): string {
+  // @see https://core.telegram.org/bots/api#markdownv2-style
+  const escapedChars = [
+    '_',
+    '*',
+    '[',
+    ']',
+    '(',
+    ')',
+    '~',
+    '`',
+    '>',
+    '#',
+    '+',
+    '-',
+    '=',
+    '|',
+    '{',
+    '}',
+    '.',
+    '!',
+  ];
+  return escapedChars.reduce((msg, char) => msg.split(char).join(`\\${char}`), text);
 }
