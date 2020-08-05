@@ -1,6 +1,6 @@
 {
   "name": "gitlab-code-review-telegram-bot",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "## Что это?",
   "main": "bundle.js",
   "directories": {
