@@ -7,7 +7,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "start": "ts-node -r tsconfig-paths/register src/index.ts",
+    "build": "tsc",
+    "start": "dist/index.js",
     "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts",
     "test": "jest",
     "lint": "eslint src \"src/**/*.ts\" --quiet"
@@ -20,6 +21,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^26.0.8",
+    "@types/lowdb": "^1.0.9",
+    "@types/node": "^14.0.27",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",
     "axios-mock-adapter": "^1.18.2",
@@ -35,18 +38,16 @@
     "jest": "^26.2.2",
     "prettier": "^2.0.5",
     "ts-jest": "^26.1.4",
-    "ts-node-dev": "^1.0.0-pre.56"
-  },
-  "dependencies": {
-    "@types/lowdb": "^1.0.9",
-    "@types/node": "^14.0.27",
-    "axios": "^0.19.2",
-    "fastify": "^3.1.1",
-    "lowdb": "^1.0.0",
-    "telegraf": "^3.38.0",
+    "ts-node-dev": "^1.0.0-pre.56",
     "ts-node": "^8.10.2",
     "tsconfig-paths": "^3.9.0",
     "tslib": "^2.0.0",
     "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "fastify": "^3.1.1",
+    "lowdb": "^1.0.0",
+    "telegraf": "^3.38.0"
   }
 }

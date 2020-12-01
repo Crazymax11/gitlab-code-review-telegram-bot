@@ -159,10 +159,11 @@ export interface IGitlabMergeRequestEvent {
   assignees?: IGitlabUser[];
 }
 
+// @ts-ignore
 interface IGitlabMergeRequestOpenedEvent extends IGitlabMergeRequestEvent {
   object_attributes: IGitlabMergeRequestAttributes & { action: 'open' };
 }
-
+// @ts-ignore
 interface IGitlabMergeRequestUpdatedEvent extends IGitlabMergeRequestEvent {
   object_attributes: IGitlabMergeRequestAttributes & { action: 'update' };
 }
