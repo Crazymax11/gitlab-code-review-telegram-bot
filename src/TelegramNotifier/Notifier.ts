@@ -1,6 +1,6 @@
 import { LowdbSync } from 'lowdb';
-import { UsersStorage } from 'UsersStorage';
-import { Notifier } from 'Core';
+import { UsersStorage } from '../UsersStorage';
+import { Notifier } from '../Core';
 import { TelegramBot, escapeMarkdown } from './TelegramBot';
 
 export class TelegramNotifier implements Notifier {

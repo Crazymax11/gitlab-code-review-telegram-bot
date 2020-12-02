@@ -1,4 +1,4 @@
-import { GitlabEventsListener as GitlabEventsListenerI, GitlabEvent } from 'Core';
+import { GitlabEventsListener as GitlabEventsListenerI, GitlabEvent } from '../Core';
 import { WebhookServer } from './WebhookServer';
 import { GitlabEventsReader } from './GitlabEventsReader';
 import { GitlabClient } from './GitlabClient';

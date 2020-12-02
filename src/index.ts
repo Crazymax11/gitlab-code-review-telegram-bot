@@ -1,10 +1,10 @@
 import low from 'lowdb';
 import FileSync from 'lowdb/adapters/FileSync';
 
-import { Core } from 'Core';
-import { TelegramNotifier } from 'TelegramNotifier/Notifier';
-import { GitlabEventsListener } from 'GitlabWebhookReader/GitlabEventsListener';
-import { GitlabClient } from 'GitlabWebhookReader/GitlabClient';
+import { Core } from './Core';
+import { TelegramNotifier } from './TelegramNotifier/Notifier';
+import { GitlabEventsListener } from './GitlabWebhookReader/GitlabEventsListener';
+import { GitlabClient } from './GitlabWebhookReader/GitlabClient';
 
 if (!process.env.TG_TOKEN || !process.env.GITLAB_TOKEN || !process.env.FILE_PATH) {
   console.log('provide TG_TOKEN и GITLAB_TOKEN и FILE_PATH');

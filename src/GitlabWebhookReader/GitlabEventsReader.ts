@@ -1,5 +1,5 @@
-import { GitlabEvent } from 'Core';
 import _ from 'lodash';
+import { GitlabEvent } from '../Core';
 import { GitlabClient } from './GitlabClient';
 import {
   GitlabEvent as RawGitlabEvent,
