@@ -6,7 +6,7 @@ export interface Notifier {
       link: string;
       author: string;
     },
-  ): Promise<any>;
+  ): Promise<void>;
   notifyReviewerAboutFixed(
     reviewer: string,
     mrInfo: {
@@ -14,7 +14,7 @@ export interface Notifier {
       link: string;
       author: string;
     },
-  ): Promise<any>;
+  ): Promise<void>;
   notifyAuthorAboutApprove(
     author: string,
     mrInfo: {
@@ -22,7 +22,7 @@ export interface Notifier {
       link: string;
       reviewer: string;
     },
-  ): Promise<any>;
+  ): Promise<void>;
   notifyAuthorAboutWatched(
     author: string,
     mrInfo: {
@@ -30,7 +30,7 @@ export interface Notifier {
       link: string;
       reviewer: string;
     },
-  ): Promise<any>;
+  ): Promise<void>;
 }
 
 type addReviewersEvent = {

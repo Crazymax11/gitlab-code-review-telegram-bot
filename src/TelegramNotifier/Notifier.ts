@@ -1,15 +1,15 @@
-import { LowdbSync } from 'lowdb';
-import { UsersStorage } from '../UsersStorage';
 import { Notifier } from '../Core';
+import { IUserStorage } from '../types';
+import { createStorage } from '../UsersStorage/createStorage';
 import { TelegramBot, escapeMarkdown } from './TelegramBot';
 
 export class TelegramNotifier implements Notifier {
-  private store: UsersStorage;
+  private store: IUserStorage;
 
   private bot: TelegramBot;
 
-  constructor(token: string, lowdb: LowdbSync<any>) {
-    this.store = new UsersStorage(lowdb);
+  constructor(token: string) {
+    this.store = createStorage();
     this.bot = new TelegramBot({
       token,
       onStore: (params) => {
@@ -29,7 +29,7 @@ export class TelegramNotifier implements Notifier {
       link: string;
       author: string;
     },
-  ) {
+  ): Promise<void> {
     const user = await this.store.getUser(reviewer);
     if (!user) {
       return;
@@ -48,7 +48,7 @@ export class TelegramNotifier implements Notifier {
       link: string;
       author: string;
     },
-  ) {
+  ): Promise<void> {
     const user = await this.store.getUser(reviewer);
     const message = `🙄 ${escapeMarkdown(
       mrInfo.author,
@@ -67,7 +67,7 @@ export class TelegramNotifier implements Notifier {
       link: string;
       reviewer: string;
     },
-  ) {
+  ): Promise<void> {
     const user = await this.store.getUser(author);
     const message = `👍 ${escapeMarkdown(
       mrInfo.reviewer,
@@ -86,7 +86,7 @@ export class TelegramNotifier implements Notifier {
       link: string;
       reviewer: string;
     },
-  ) {
+  ): Promise<void> {
     const user = await this.store.getUser(author);
     const message = `👀 ${escapeMarkdown(
       mrInfo.reviewer,
@@ -98,7 +98,7 @@ export class TelegramNotifier implements Notifier {
     this.bot.sendMessage(user.telegramChatId, message);
   }
 
-  private makeMarkdownLinktoMr(name: string, link: string) {
+  private makeMarkdownLinktoMr(name: string, link: string): string {
     return `[${escapeMarkdown(name)}](${escapeMarkdown(link)})`;
   }
 }

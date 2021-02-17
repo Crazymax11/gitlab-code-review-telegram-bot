@@ -23,6 +23,13 @@ export class TelegramBot {
       if (!text) {
         return;
       }
+
+      const echoRe = /^\/echo$/;
+      if (!echoRe.test(text)) {
+        ctx.reply(`chatid: ${ctx.update.message?.chat.id}`);
+        return;
+      }
+
       const usernameRe = /iam ([^\s]+)$/;
       if (!usernameRe.test(text)) {
         return;
@@ -40,7 +47,7 @@ export class TelegramBot {
         return;
       }
 
-      ctx.reply(':ok_hand:');
+      ctx.reply(`:ok_hand:, chatid: ${chatId}`);
       this.onStore({
         username,
         chatId,
