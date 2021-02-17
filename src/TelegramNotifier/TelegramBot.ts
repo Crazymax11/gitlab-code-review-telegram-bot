@@ -17,16 +17,13 @@ export class TelegramBot {
 
   start() {
     this.bot.start((ctx) => ctx.reply('Welcome!'));
+    this.bot.command('echo', (ctx) => {
+      ctx.reply(`chatid: ${ctx.update.message?.chat.id}`);
+    });
     this.bot.command('iam', (ctx) => {
       const text = ctx.update.message?.text;
 
       if (!text) {
-        return;
-      }
-
-      const echoRe = /^\/echo$/;
-      if (!echoRe.test(text)) {
-        ctx.reply(`chatid: ${ctx.update.message?.chat.id}`);
         return;
       }
 
