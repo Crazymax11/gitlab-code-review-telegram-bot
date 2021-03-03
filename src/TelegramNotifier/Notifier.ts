@@ -1,6 +1,5 @@
 import { Notifier } from '../Core';
 import { IUserStorage } from '../types';
-import { createStorage } from '../UsersStorage/createStorage';
 import { TelegramBot, escapeMarkdown } from './TelegramBot';
 
 export class TelegramNotifier implements Notifier {
@@ -8,8 +7,8 @@ export class TelegramNotifier implements Notifier {
 
   private bot: TelegramBot;
 
-  constructor(token: string) {
-    this.store = createStorage();
+  constructor(token: string, storage: IUserStorage) {
+    this.store = storage;
     this.bot = new TelegramBot({
       token,
       onStore: (params) => {
