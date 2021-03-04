@@ -1,6 +1,6 @@
 import { Notifier } from '../Core';
 import { IUserStorage, ILogger } from '../types';
-import { TelegramBot, escapeMarkdown } from './TelegramBot';
+import { TelegramBot } from './TelegramBot';
 
 export class TelegramNotifier implements Notifier {
   private store: IUserStorage;
@@ -9,22 +9,10 @@ export class TelegramNotifier implements Notifier {
 
   private logger: ILogger;
 
-  constructor(token: string, storage: IUserStorage, logger: ILogger) {
+  constructor(storage: IUserStorage, logger: ILogger, bot: TelegramBot) {
     this.store = storage;
     this.logger = logger.createScope('TelegramNotifier');
-    this.bot = new TelegramBot({
-      token,
-      onStore: (params) => {
-        this.logger.debug(`savedUser ${JSON.stringify(params)}`);
-
-        this.store.saveUser({ gitlabUsername: params.username, telegramChatId: params.chatId });
-        return Promise.resolve();
-      },
-    });
-
-    this.bot.start();
-
-    this.logger.info('Started');
+    this.bot = bot;
   }
 
   async notifyReviewerAboutMr(
@@ -114,4 +102,29 @@ export class TelegramNotifier implements Notifier {
   private makeMarkdownLinktoMr(name: string, link: string): string {
     return `[${escapeMarkdown(name)}](${escapeMarkdown(link)})`;
   }
+}
+
+function escapeMarkdown(text: string): string {
+  // @see https://core.telegram.org/bots/api#markdownv2-style
+  const escapedChars = [
+    '_',
+    '*',
+    '[',
+    ']',
+    '(',
+    ')',
+    '~',
+    '`',
+    '>',
+    '#',
+    '+',
+    '-',
+    '=',
+    '|',
+    '{',
+    '}',
+    '.',
+    '!',
+  ];
+  return escapedChars.reduce((msg, char) => msg.split(char).join(`\\${char}`), text);
 }

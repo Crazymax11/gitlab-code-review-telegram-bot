@@ -1,3 +1,5 @@
+import { IUserCommandsHandler } from './types';
+
 export interface Notifier {
   notifyReviewerAboutMr(
     reviewer: string,
@@ -81,7 +83,11 @@ export interface GitlabEventsListener {
 }
 
 export class Core {
-  constructor(private notitifer: Notifier, private gitlabEventsListener: GitlabEventsListener) {
+  constructor(
+    private notitifer: Notifier,
+    private gitlabEventsListener: GitlabEventsListener,
+    private userCommandsHandler: IUserCommandsHandler,
+  ) {
     this.gitlabEventsListener.onEvent((event: GitlabEvent) => {
       switch (event.type) {
         case 'addReviewersEvent':
@@ -115,5 +121,9 @@ export class Core {
           });
       }
     });
+  }
+
+  start(): void {
+    this.userCommandsHandler.start();
   }
 }

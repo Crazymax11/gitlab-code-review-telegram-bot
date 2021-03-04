@@ -15,3 +15,7 @@ export interface ILogger {
   debug(message: string): void;
   createScope(scopeName: string): ILogger;
 }
+
+export interface IUserCommandsHandler {
+  start(): Promise<void>;
+}
