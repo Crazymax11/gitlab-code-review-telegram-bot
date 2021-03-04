@@ -1,8 +1,8 @@
-import { IUserStorage } from '../types';
+import { ILogger, IUserStorage } from '../types';
 import { LowDbUsersStorage } from './LowDbUsersStorage';
 import { StaticJsonUsersStorage } from './StaticJsonUsersStorage';
 
-export function createStorage(): IUserStorage {
+export function createStorage(logger: ILogger): IUserStorage {
   const storageType = process.env.STORAGE || 'lowdb';
 
   if (storageType === 'lowdb') {
@@ -10,7 +10,7 @@ export function createStorage(): IUserStorage {
       throw new Error('provide FILE_PATH to use lowdb storage');
     }
 
-    return new LowDbUsersStorage(process.env.FILE_PATH);
+    return new LowDbUsersStorage(process.env.FILE_PATH, logger);
   }
 
   if (storageType === 'staticjson') {
@@ -18,7 +18,7 @@ export function createStorage(): IUserStorage {
       throw new Error('provide FILE_PATH to use lowdb storage');
     }
 
-    return new StaticJsonUsersStorage(process.env.FILE_PATH);
+    return new StaticJsonUsersStorage(process.env.FILE_PATH, logger);
   }
 
   throw new Error('provide STORAGE lowdb or staticjson');

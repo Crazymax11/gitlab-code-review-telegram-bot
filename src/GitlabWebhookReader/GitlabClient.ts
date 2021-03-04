@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { ILogger } from '../types';
 
 interface User {
   id: number;
@@ -54,15 +55,19 @@ export class GitlabClient {
 
   private token: string;
 
-  constructor(gitlabHost: string, token: string) {
+  private logger: ILogger;
+
+  constructor(gitlabHost: string, token: string, logger: ILogger) {
     this.token = token;
+    this.logger = logger.createScope('GitlabClient');
     this.axiosClient = axios.create({
       baseURL: `${gitlabHost}/api/v4`,
     });
   }
 
   getUsernameById(userId: number) {
-    console.log('getUsernameById', userId);
+    this.logger.debug(`getUsernameById ${userId}`);
+
     return this.axiosClient
       .get(`/users/${userId}`, {
         headers: {
@@ -77,7 +82,10 @@ export class GitlabClient {
     mergeReqiestIid: number,
     discussionId: string,
   ): Promise<IDiscussion> {
-    console.log('getDiscussion', projectId, mergeReqiestIid, discussionId);
+    this.logger.debug(
+      `getDiscussion ${JSON.stringify({ projectId, mergeReqiestIid, discussionId })}`,
+    );
+
     return this.axiosClient
       .get(`/projects/${projectId}/merge_requests/${mergeReqiestIid}/discussions/${discussionId}`, {
         headers: {

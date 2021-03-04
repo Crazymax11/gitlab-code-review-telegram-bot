@@ -2,6 +2,7 @@ import { Notifier, Core } from './Core';
 import { GitlabEventsListener } from './GitlabWebhookReader/GitlabEventsListener';
 import { GitlabClient, IDiscussion } from './GitlabWebhookReader/GitlabClient';
 import * as fixtures from './GitlabWebhookReader/gitlabEvents';
+import { ILogger } from './types';
 
 describe('Core', () => {
   it('Должен уведомить двух ревьюеров при открытии МР', async () => {
@@ -201,7 +202,19 @@ function prepare() {
     getUsernameById: jest.fn(),
     getDiscussion: jest.fn(),
   };
-  const gitlabEventListener = new GitlabEventsListener((gitlabClient as any) as GitlabClient);
+
+  const logger: ILogger = {
+    info: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+    createScope() {
+      return this;
+    },
+  } as ILogger;
+  const gitlabEventListener = new GitlabEventsListener(
+    (gitlabClient as any) as GitlabClient,
+    logger,
+  );
 
   const core = new Core(notifier, gitlabEventListener);
 

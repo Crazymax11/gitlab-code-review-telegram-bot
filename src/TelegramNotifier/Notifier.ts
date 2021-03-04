@@ -1,5 +1,5 @@
 import { Notifier } from '../Core';
-import { IUserStorage } from '../types';
+import { IUserStorage, ILogger } from '../types';
 import { TelegramBot, escapeMarkdown } from './TelegramBot';
 
 export class TelegramNotifier implements Notifier {
@@ -7,18 +7,24 @@ export class TelegramNotifier implements Notifier {
 
   private bot: TelegramBot;
 
-  constructor(token: string, storage: IUserStorage) {
+  private logger: ILogger;
+
+  constructor(token: string, storage: IUserStorage, logger: ILogger) {
     this.store = storage;
+    this.logger = logger.createScope('TelegramNotifier');
     this.bot = new TelegramBot({
       token,
       onStore: (params) => {
-        console.log('savedUser', params);
+        this.logger.debug(`savedUser ${JSON.stringify(params)}`);
+
         this.store.saveUser({ gitlabUsername: params.username, telegramChatId: params.chatId });
         return Promise.resolve();
       },
     });
+
     this.bot.start();
-    console.log('TgbotStarted');
+
+    this.logger.info('Started');
   }
 
   async notifyReviewerAboutMr(
@@ -33,7 +39,9 @@ export class TelegramNotifier implements Notifier {
     if (!user) {
       return;
     }
-    console.log('notifyReviewerAboutMr');
+
+    this.logger.debug(`notify reviewer about mr. ${JSON.stringify({ reviewer, mrInfo })}`);
+
     const message = `🙏🏻 ${escapeMarkdown(
       mrInfo.author,
     )} просит вас посмотреть МР ${this.makeMarkdownLinktoMr(mrInfo.name, mrInfo.link)}`;
@@ -55,7 +63,9 @@ export class TelegramNotifier implements Notifier {
     if (!user) {
       return;
     }
-    console.log('notifyReviewerAboutFixed');
+
+    this.logger.debug(`notify reviewer about fixed. ${JSON.stringify({ reviewer, mrInfo })}`);
+
     this.bot.sendMessage(user.telegramChatId, message);
   }
 
@@ -74,7 +84,9 @@ export class TelegramNotifier implements Notifier {
     if (!user) {
       return;
     }
-    console.log('notifyAuthorAboutApprove');
+
+    this.logger.debug(`notify author about approve. ${JSON.stringify({ author, mrInfo })}`);
+
     this.bot.sendMessage(user.telegramChatId, message);
   }
 
@@ -93,7 +105,9 @@ export class TelegramNotifier implements Notifier {
     if (!user) {
       return;
     }
-    console.log('notifyAuthorAboutWatched');
+
+    this.logger.debug(`notify author about watched. ${JSON.stringify({ author, mrInfo })}`);
+
     this.bot.sendMessage(user.telegramChatId, message);
   }
 
