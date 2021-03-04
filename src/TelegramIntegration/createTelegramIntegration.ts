@@ -1,6 +1,6 @@
 import { Notifier } from '../Core';
 import { ILogger, IUserCommandsHandler, IUserStorage } from '../types';
-import { TelegramNotifier } from './Notifier';
+import { TelegramNotifier } from './TelegramNotifier';
 import { TelegramBot } from './TelegramBot';
 import { TelegramCommandsHandler } from './TelegramCommandsHandler';
 

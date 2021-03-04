@@ -1,14 +1,14 @@
 import { ILogger, IUserCommandsHandler, IUserStorage } from '../types';
-import { TelegramBot } from './TelegramBot';
+import { ITelegramBot } from './TelegramBot';
 
 export class TelegramCommandsHandler implements IUserCommandsHandler {
-  private bot: TelegramBot;
+  private bot: ITelegramBot;
 
   private logger: ILogger;
 
   private storage: IUserStorage;
 
-  constructor(bot: TelegramBot, logger: ILogger, storage: IUserStorage) {
+  constructor(bot: ITelegramBot, logger: ILogger, storage: IUserStorage) {
     this.logger = logger.createScope('TelegramCommandsHandler');
     this.bot = bot;
     this.storage = storage;

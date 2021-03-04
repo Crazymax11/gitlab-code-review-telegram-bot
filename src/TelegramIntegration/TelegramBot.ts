@@ -2,7 +2,14 @@ import { Telegraf } from 'telegraf';
 
 import { TelegrafContext } from 'telegraf/typings/context';
 
-export class TelegramBot {
+export interface ITelegramBot {
+  start(): void;
+
+  sendMessage(chatId: number, message: string): void;
+
+  registerCommand(command: string, callback: (ctx: TelegrafContext) => void): void;
+}
+export class TelegramBot implements ITelegramBot {
   private bot: Telegraf<TelegrafContext>;
 
   constructor(params: { token: string }) {
@@ -20,7 +27,7 @@ export class TelegramBot {
     this.bot.telegram.sendMessage(chatId, message, { parse_mode: 'MarkdownV2' });
   }
 
-  registerCommand(command: string, callback: (ctx: TelegrafContext) => void) {
+  registerCommand(command: string, callback: (ctx: TelegrafContext) => void): void {
     this.bot.command(command, callback);
   }
 }

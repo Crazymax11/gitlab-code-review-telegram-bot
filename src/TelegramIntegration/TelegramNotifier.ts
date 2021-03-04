@@ -1,15 +1,15 @@
 import { Notifier } from '../Core';
 import { IUserStorage, ILogger } from '../types';
-import { TelegramBot } from './TelegramBot';
+import { ITelegramBot } from './TelegramBot';
 
 export class TelegramNotifier implements Notifier {
   private store: IUserStorage;
 
-  private bot: TelegramBot;
+  private bot: ITelegramBot;
 
   private logger: ILogger;
 
-  constructor(storage: IUserStorage, logger: ILogger, bot: TelegramBot) {
+  constructor(storage: IUserStorage, logger: ILogger, bot: ITelegramBot) {
     this.store = storage;
     this.logger = logger.createScope('TelegramNotifier');
     this.bot = bot;
@@ -24,6 +24,7 @@ export class TelegramNotifier implements Notifier {
     },
   ): Promise<void> {
     const user = await this.store.getUser(reviewer);
+
     if (!user) {
       return;
     }
@@ -33,6 +34,7 @@ export class TelegramNotifier implements Notifier {
     const message = `🙏🏻 ${escapeMarkdown(
       mrInfo.author,
     )} просит вас посмотреть МР ${this.makeMarkdownLinktoMr(mrInfo.name, mrInfo.link)}`;
+
     this.bot.sendMessage(user.telegramChatId, message);
   }
 
@@ -45,6 +47,7 @@ export class TelegramNotifier implements Notifier {
     },
   ): Promise<void> {
     const user = await this.store.getUser(reviewer);
+
     const message = `🙄 ${escapeMarkdown(
       mrInfo.author,
     )} поправил замечания в МР ${this.makeMarkdownLinktoMr(mrInfo.name, mrInfo.link)}`;
