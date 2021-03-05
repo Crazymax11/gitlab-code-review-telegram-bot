@@ -1,0 +1,7 @@
+html
+    body
+        include header.pug
+        ul
+            each user in users
+                li
+                    a(href="/ui/users/" + user.gitlabUsername) #{user.gitlabUsername}

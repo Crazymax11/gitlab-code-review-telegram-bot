@@ -1,0 +1,7 @@
+html
+    body
+        include header.pug
+        form(action="/api/users/#{gitlabUsername}" method="post")
+            input(name="gitlabUsername" value=gitlabUsername)
+            input(type="number" name="telegramChatId" value=telegramChatId)
+            button(type="submut") update

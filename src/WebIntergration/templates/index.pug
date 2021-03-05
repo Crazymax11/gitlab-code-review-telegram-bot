@@ -1,0 +1,11 @@
+html
+    body
+        case isAdmin
+            when false
+                div залогинься
+                form(action="/api/loginAsAdmin", method="post")
+                    input(type="text" placeholder="password" name="password")
+                    button(type="submit")
+            when true
+                include header.pug
+                div logged

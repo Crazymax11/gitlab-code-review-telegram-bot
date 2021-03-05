@@ -4,6 +4,9 @@ import fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import { RouteGenericInterface } from 'fastify/types/route';
 import { Server, IncomingMessage, ServerResponse } from 'http';
 import cookieReader from 'fastify-cookie';
+import renderPlugin from 'point-of-view';
+import pug from 'pug';
+import formbodyPraser from 'fastify-formbody';
 import { encryptPassword } from './encryptPassword';
 import { IUserStorage } from '../types';
 
@@ -14,7 +17,17 @@ const createServer = (options: {
   const server = fastify();
 
   server.register(cookieReader);
+  server.register(formbodyPraser);
+  server.register(renderPlugin, {
+    engine: {
+      pug,
+    },
+    root: __dirname,
+  });
 
+  const isAdmin = (
+    request: FastifyRequest<RouteGenericInterface, Server, IncomingMessage>,
+  ): boolean => request.cookies.auth === encryptPassword(options.config.adminPassword);
   const checkAdminAuthMiddleware = (
     request: FastifyRequest<RouteGenericInterface, Server, IncomingMessage>,
     reply: FastifyReply<Server, IncomingMessage, ServerResponse, RouteGenericInterface, unknown>,
@@ -24,6 +37,19 @@ const createServer = (options: {
     }
     if (request.cookies.auth !== encryptPassword(options.config.adminPassword)) {
       return reply.status(403).send();
+    }
+
+    return Promise.resolve();
+  };
+  const redirectToLoginUiMiddleware = (
+    request: FastifyRequest<RouteGenericInterface, Server, IncomingMessage>,
+    reply: FastifyReply<Server, IncomingMessage, ServerResponse, RouteGenericInterface, unknown>,
+  ) => {
+    if (!request.cookies.auth) {
+      return reply.redirect('/ui');
+    }
+    if (request.cookies.auth !== encryptPassword(options.config.adminPassword)) {
+      return reply.redirect('/ui');
     }
 
     return Promise.resolve();
@@ -91,12 +117,14 @@ const createServer = (options: {
     },
     async (request, reply) => {
       if ((request.body as any).password !== options.config.adminPassword) {
+        console.log(options.config.adminPassword);
         return reply.status(400).send();
       }
 
       return reply
         .setCookie('auth', encryptPassword(options.config.adminPassword), {
           maxAge: 60 * 60 * 24,
+          path: '/',
         })
         .send();
     },
@@ -129,6 +157,33 @@ const createServer = (options: {
       return reply.status(200).send();
     },
   );
+
+  server.get('/ui/users', { preHandler: redirectToLoginUiMiddleware }, async (request, reply) => {
+    const users = await options.usersStorage.getUsers();
+    return reply.view('/templates/users.pug', { isAdmin: isAdmin(request), users });
+  });
+
+  server.get(
+    '/ui/users/:userId',
+    { preHandler: redirectToLoginUiMiddleware },
+    async (request, reply) => {
+      const user = await options.usersStorage.getUser((request.params as any).userId);
+      if (!user) {
+        return reply.redirect('/ui/users');
+      }
+
+      return reply.view('/templates/user.pug', {
+        gitlabUsername: user.gitlabUsername,
+        telegramChatId: user.telegramChatId,
+      });
+    },
+  );
+
+  server.get('/ui', async (request, reply) => {
+    return reply.view('/templates/index.pug', {
+      isAdmin: isAdmin(request),
+    });
+  });
 
   return server;
 };

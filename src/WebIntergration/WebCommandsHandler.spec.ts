@@ -42,6 +42,7 @@ describe('WebCommandsHandler', () => {
           maxAge: 86400,
           name: 'auth',
           value: fixtures.AUTH_COOKIE,
+          path: '/',
         });
       });
     });
@@ -253,7 +254,7 @@ describe('WebCommandsHandler', () => {
     });
   });
 
-  describe.skip('ui', () => {
+  describe('ui', () => {
     it('GET /ui должен отдать контент', async () => {
       const res = await server.inject({
         method: 'GET',
@@ -261,6 +262,7 @@ describe('WebCommandsHandler', () => {
         cookies: { auth: fixtures.AUTH_COOKIE },
       });
       expect(res.statusCode).toEqual(200);
+      expect(res.body).toContain('body');
     });
     describe('GET /ui/users должен отдать контент', () => {
       it('должен отдать контент если админ', async () => {
@@ -270,6 +272,7 @@ describe('WebCommandsHandler', () => {
           cookies: { auth: fixtures.AUTH_COOKIE },
         });
         expect(res.statusCode).toEqual(200);
+        expect(res.body).toContain('body');
       });
       it('должен редиректнуть на /ui если неадмин', async () => {
         const res = await server.inject({
@@ -277,7 +280,8 @@ describe('WebCommandsHandler', () => {
           url: '/ui/users',
           cookies: { auth: '123' },
         });
-        expect(res.statusCode).toEqual(301);
+        expect(res.statusCode).toEqual(302);
+        expect(res.headers.location).toEqual('/ui');
       });
     });
     describe('GET /ui/users/:userId', () => {
@@ -288,6 +292,7 @@ describe('WebCommandsHandler', () => {
           cookies: { auth: fixtures.AUTH_COOKIE },
         });
         expect(res.statusCode).toEqual(200);
+        expect(res.body).toContain('body');
       });
       it('должен редиректнуть на /ui если неадмин', async () => {
         const res = await server.inject({
@@ -295,7 +300,8 @@ describe('WebCommandsHandler', () => {
           url: '/ui/users',
           cookies: { auth: '123' },
         });
-        expect(res.statusCode).toEqual(301);
+        expect(res.statusCode).toEqual(302);
+        expect(res.headers.location).toEqual('/ui');
       });
     });
   });

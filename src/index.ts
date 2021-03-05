@@ -4,6 +4,8 @@ import { GitlabClient } from './GitlabWebhookReader/GitlabClient';
 import { createStorage } from './UsersStorage/createStorage';
 import { WinstonLogger } from './Logger';
 import { createTelegramIntegration } from './TelegramIntegration/createTelegramIntegration';
+import { WebCommandsHandler } from './WebIntergration/WebCommandsHandler';
+import { IUserCommandsHandler } from './types';
 
 const logger = WinstonLogger.createLogger();
 if (!process.env.GITLAB_TOKEN || !process.env.FILE_PATH) {
@@ -13,6 +15,14 @@ if (!process.env.GITLAB_TOKEN || !process.env.FILE_PATH) {
 
 const storage = createStorage(logger);
 const { notifier, userCommandsHandler } = createTelegramIntegration({ storage, logger });
+const webCommand = new WebCommandsHandler(storage);
+
+const pppproxy: IUserCommandsHandler = {
+  async start() {
+    await userCommandsHandler.start();
+    await webCommand.start();
+  },
+};
 
 const gitlabEventsListener = new GitlabEventsListener(
   new GitlabClient('https://git.skbkontur.ru', process.env.GITLAB_TOKEN, logger),
@@ -21,7 +31,7 @@ const gitlabEventsListener = new GitlabEventsListener(
 
 gitlabEventsListener.start(8080);
 
-const core = new Core(notifier, gitlabEventsListener, userCommandsHandler);
+const core = new Core(notifier, gitlabEventsListener, pppproxy);
 
 core.start();
 
