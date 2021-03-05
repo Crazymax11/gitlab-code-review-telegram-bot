@@ -25,4 +25,8 @@ export class LowDbUsersStorage implements IUserStorage {
     const user = this.db.get(['users', gitlabUsername]).value();
     return Promise.resolve(user);
   }
+
+  getUsers(): Promise<UserData[]> {
+    return Promise.reject(new Error('not implemented'));
+  }
 }

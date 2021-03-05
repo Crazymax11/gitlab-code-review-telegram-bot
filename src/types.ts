@@ -7,6 +7,7 @@ export interface IUserStorage {
   saveUser(data: UserData): Promise<void>;
 
   getUser(gitlabUsername: string): Promise<UserData | undefined>;
+  getUsers(): Promise<UserData[]>;
 }
 
 export interface ILogger {

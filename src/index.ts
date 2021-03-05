@@ -22,5 +22,7 @@ const gitlabEventsListener = new GitlabEventsListener(
 gitlabEventsListener.start(8080);
 
 const core = new Core(notifier, gitlabEventsListener, userCommandsHandler);
+
 core.start();
+
 logger.info('started');

@@ -39,4 +39,9 @@ export class StaticJsonUsersStorage implements IUserStorage {
     this.logger.debug(`getUser ${gitlabUsername}`);
     return Promise.resolve(users[gitlabUsername]);
   }
+
+  getUsers(): Promise<UserData[]> {
+    const data = this.readFile();
+    return Promise.resolve(Object.values(data));
+  }
 }
