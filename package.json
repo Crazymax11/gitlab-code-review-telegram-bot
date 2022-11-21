@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "fastify": "^3.13.0",
+    "fastify": "^3.29.4",
     "fastify-cookie": "^5.1.0",
     "fastify-formbody": "^5.0.0",
     "lowdb": "^1.0.0",
